@@ -9,7 +9,7 @@ remappings = [
     '@solmate=lib/solmate/src',
 ]
 
-eth_rpc_url = "http://127.0.0.1:8545"
+# eth_rpc_url = "http://127.0.0.1:8545"
 optimizer = true
 optimizer_runs = 1
 fuzz_runs = 32768
