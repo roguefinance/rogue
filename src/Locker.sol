@@ -89,8 +89,8 @@ contract Locker is OFT {
         uint256 balance = mav.balanceOf(address(this));
         if (balance == 0) revert NoDeposit();
         uint256 incentive = Math.mulDiv(balance, callIncentive, ONE);
-        IBoard(board).extendLockup(balance);
         _mint(msg.sender, incentive);
+        IBoard(board).extendLockup(balance);
     }
 
     ////////////////////////////////////////////////////////////////
