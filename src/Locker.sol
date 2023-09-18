@@ -19,6 +19,7 @@ contract Locker is OFT {
     error InvalidIncentiveValue(uint256 incentive);
     error InvalidBoard();
     error TimelockPeriodNotPassed();
+    error AlreadyDisabled();
 
     event BoardSet(address board, uint256 incentive);
     event IncentiveUpdated(uint256 incentive);
@@ -113,6 +114,7 @@ contract Locker is OFT {
 
     /// @notice disable withdrawals
     function disable() external onlyOwner {
+        if (disabled) revert AlreadyDisabled();
         if (boardSetAt + 3 days < block.timestamp) revert TimelockPeriodNotPassed();
         disabled = true;
         emit WithdrawalsDisabled();
