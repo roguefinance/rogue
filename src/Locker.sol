@@ -21,6 +21,7 @@ contract Locker is OFT {
     error NotDisabled();
     error InvalidIncentiveValue(uint256 incentive);
     error InvalidBoard();
+    error TimelockPeriodNotPassed();
 
     event BoardSet(address board);
     event IncentiveUpdated(uint256 incentive);
@@ -40,6 +41,9 @@ contract Locker is OFT {
 
     /// @notice returns true if withdrawals are disabled
     bool public disabled;
+
+    /// @notice timestamp when board was set
+    uint256 public boardSetAt;
 
     /// @notice 100%
     uint256 public constant ONE = 1e18;
@@ -101,6 +105,7 @@ contract Locker is OFT {
         if (_callIncentive == 0 || _callIncentive > maxIncentive) revert InvalidIncentiveValue(_callIncentive);
         board = _board;
         callIncentive = _callIncentive;
+        boardSetAt = block.timestamp;
         mav.safeApprove(_board, type(uint256).max);
         emit BoardSet(_board);
     }
@@ -115,6 +120,7 @@ contract Locker is OFT {
 
     /// @notice disable withdrawals
     function disable() external onlyOwner {
+        if (boardSetAt + 3 days < block.timestamp) revert TimelockPeriodNotPassed();
         disabled = true;
         emit WithdrawalsDisabled();
     }
