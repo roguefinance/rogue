@@ -61,7 +61,7 @@ contract Locker is OFT {
     ////////////////////////// User Facing /////////////////////////
     ////////////////////////////////////////////////////////////////
 
-    /// @notice deposit MAV and mint rMAV
+    /// @notice deposit MAV, pulls MAV from caller and mint rMAV to `recipient`
     /// @param amount amount of MAV to lock pulled from `msg.sender`
     /// @param recipient address to mint rMAV to
     function deposit(uint256 amount, address recipient) external {
