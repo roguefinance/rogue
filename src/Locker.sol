@@ -23,7 +23,7 @@ contract Locker is OFT {
     error InvalidBoard();
     error TimelockPeriodNotPassed();
 
-    event BoardSet(address board);
+    event BoardSet(address board, uint256 incentive);
     event IncentiveUpdated(uint256 incentive);
     event WithdrawalsDisabled();
 
@@ -107,7 +107,7 @@ contract Locker is OFT {
         callIncentive = _callIncentive;
         boardSetAt = block.timestamp;
         mav.safeApprove(_board, type(uint256).max);
-        emit BoardSet(_board);
+        emit BoardSet(_board, _callIncentive);
     }
 
     /// @notice updates the incentive rate for calling lock limiting it to 1%
