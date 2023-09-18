@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 import {OFT} from "@layerzerolabs/solidity-examples/contracts/token/oft/OFT.sol";
 
@@ -88,7 +87,7 @@ contract Locker is OFT {
         if (board == address(0)) revert BoardNotSet();
         uint256 balance = mav.balanceOf(address(this));
         if (balance == 0) revert NoDeposit();
-        uint256 incentive = Math.mulDiv(balance, callIncentive, ONE);
+        uint256 incentive = balance * callIncentive / ONE;
         _mint(msg.sender, incentive);
         IBoard(board).extendLockup(balance);
     }
