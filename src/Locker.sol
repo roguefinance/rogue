@@ -14,7 +14,6 @@ contract Locker is OFT {
     error ZeroAmount();
     error NoDeposit();
     error BoardAlreadySet();
-    error BoardNotSet();
     error Disabled();
     error NotDisabled();
     error InvalidIncentiveValue(uint256 incentive);
@@ -80,7 +79,6 @@ contract Locker is OFT {
     /// @notice extend locks, caller get rMAV minted as incentive
     function lock() external {
         if (!disabled) revert NotDisabled();
-        if (board == address(0)) revert BoardNotSet();
         uint256 balance = mav.balanceOf(address(this));
         if (balance == 0) revert NoDeposit();
         uint256 incentive = balance * callIncentive / ONE;
