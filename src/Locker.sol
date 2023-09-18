@@ -2,14 +2,10 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-
 import {OFT} from "@layerzerolabs/solidity-examples/contracts/token/oft/OFT.sol";
-
 import {IBoard} from "./interfaces/IBoard.sol";
 
 contract Locker is OFT {
-    using SafeERC20 for IERC20;
 
     error ZeroAmount();
     error NoDeposit();
@@ -64,7 +60,7 @@ contract Locker is OFT {
     /// @param recipient address to mint rMAV to
     function deposit(uint256 amount, address recipient) external {
         if (amount == 0) revert ZeroAmount();
-        mav.safeTransferFrom(msg.sender, address(this), amount);
+        mav.transferFrom(msg.sender, address(this), amount);
         _mint(recipient, amount);
     }
 
@@ -74,7 +70,7 @@ contract Locker is OFT {
         if (disabled) revert Disabled();
         if (amount == 0) revert ZeroAmount();
         _burn(msg.sender, amount);
-        mav.safeTransfer(msg.sender, amount);
+        mav.transfer(msg.sender, amount);
     }
 
     /// @notice extend locks, caller get rMAV minted as incentive
@@ -100,7 +96,7 @@ contract Locker is OFT {
         board = _board;
         callIncentive = _callIncentive;
         boardSetAt = block.timestamp;
-        mav.safeApprove(_board, type(uint256).max);
+        mav.approve(_board, type(uint256).max);
         emit BoardSet(_board, _callIncentive);
     }
 
