@@ -13,7 +13,6 @@ contract Locker is OFT {
 
     error ZeroAmount();
     error NoDeposit();
-    error LowBalance();
     error BoardAlreadySet();
     error BoardNotSet();
     error Disabled();
@@ -74,7 +73,6 @@ contract Locker is OFT {
     function withdraw(uint256 amount) external {
         if (disabled) revert Disabled();
         if (amount == 0) revert ZeroAmount();
-        if (balanceOf(msg.sender) < amount) revert LowBalance();
         _burn(msg.sender, amount);
         mav.safeTransfer(msg.sender, amount);
     }
