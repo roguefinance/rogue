@@ -66,7 +66,6 @@ contract Locker is OFT {
     function deposit(uint256 amount, address recipient) external {
         if (amount == 0) revert ZeroAmount();
         mav.safeTransferFrom(msg.sender, address(this), amount);
-        totalLocked += amount;
         _mint(recipient, amount);
     }
 
@@ -77,7 +76,6 @@ contract Locker is OFT {
         if (amount == 0) revert ZeroAmount();
         if (balanceOf(msg.sender) < amount) revert LowBalance();
         _burn(msg.sender, amount);
-        totalLocked -= amount;
         mav.safeTransfer(msg.sender, amount);
     }
 
