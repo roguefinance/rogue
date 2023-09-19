@@ -146,6 +146,7 @@ contract LockerTest is Test {
         // set board
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), _incentive);
+        vm.warp(locker.boardSetAt() + 3 days);
         locker.disable();
         vm.stopPrank();
 
@@ -165,31 +166,8 @@ contract LockerTest is Test {
         assertEq(locker.balanceOf(incentiveCaller), _deposited * locker.callIncentive() / locker.ONE());
     }
 
-    function testFail_lock_withdrawals_enabled() public {
-        address caller = alice;
-        address recipient = bob;
-        address incentiveCaller = address(674674);
-        
-        uint deposited = 1e18;
-
-        // deposit
-        vm.startPrank(caller);
-        mav.approve(address(locker), deposited);
-        locker.deposit(deposited, recipient);
-        vm.stopPrank();
-
-        vm.startPrank(locker.owner());
-        locker.setBoard(address(board), 0.01e18);
-        vm.stopPrank();
-
-        // lock
-        vm.startPrank(incentiveCaller);
-        locker.lock();
-        vm.stopPrank();
-    }
-
     // Bots shouldn't be able to lock MAV on veMAV when board is not set
-    function testFail_lock_BoardNotSet() public {
+    function test_lock_notDisabled() public {
         address caller = alice;
         address recipient = bob;
         address incentiveCaller = address(674674);
@@ -204,22 +182,27 @@ contract LockerTest is Test {
 
         // lock
         vm.startPrank(incentiveCaller);
+        vm.expectRevert(Locker.NotDisabled.selector);
         locker.lock();
         vm.stopPrank();
     }
 
     // Bots shouldn't be able to lock MAV on veMAV when no MAV is deposited
-    function testFail_lock_noDeposit() public {
+    function test_lock_noDeposit() public {
 
         address incentiveCaller = address(674674);
 
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), 0.01e18);
+        vm.warp(locker.boardSetAt() + 3 days);
+        locker.disable();
         vm.stopPrank();
 
-        // lock
         vm.startPrank(incentiveCaller);
+
+        vm.expectRevert(Locker.NoDeposit.selector);
         locker.lock();
+
         vm.stopPrank();
     }
 
@@ -233,20 +216,29 @@ contract LockerTest is Test {
         locker.setBoard(address(board), 0.01e18);
         vm.stopPrank();
         assertEq(address(locker.board()), address(board));
+        assertEq(locker.boardSetAt(), block.timestamp);
     }
 
     // Owner shouldn't be able to set the board if it's already set
-    function testFail_setBoard_alreadySet() public {
+    function test_setBoard_alreadySet() public {
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), 0.01e18);
+
+        vm.expectRevert(Locker.BoardAlreadySet.selector);
         locker.setBoard(address(board), 0.01e18);
+
         vm.stopPrank();
     }
 
     // Owner shouldn't be able to set the board if the incentive is invalid
-    function testFail_setBoard_invalidValue() public {
+    function test_setBoard_invalidValue() public {
+        uint256 invalidIncentive = 0.01e18 + 1;
         vm.startPrank(locker.owner());
-        locker.setBoard(address(board), 0);
+        bytes memory revertData = abi.encodeWithSelector(Locker.InvalidIncentiveValue.selector, invalidIncentive);
+
+        vm.expectRevert(revertData);
+        locker.setBoard(address(board), invalidIncentive);
+
         vm.stopPrank();
     }
 
@@ -262,18 +254,57 @@ contract LockerTest is Test {
     }
 
     // Owner shouldn't be able to update the incentive if it's invalid
-    function testFail_updateIncentive_wrongValue() public {
+    function test_updateIncentive_wrongValue() public {
         uint invalidIncentive = 0.01e18 + 1;
         vm.startPrank(locker.owner());
+        bytes memory revertData = abi.encodeWithSelector(Locker.InvalidIncentiveValue.selector, invalidIncentive);
+        vm.expectRevert(revertData);
+
         locker.updateIncentive(invalidIncentive);
+
         vm.stopPrank();
     }
 
-    // Owner should be able to disable withdrawals
+    // Owner should be able to disable withdrawals if timelock has passed
     function test_disable() public {
+        uint callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
+        locker.setBoard(address(board), callIncentive);
+
+        vm.warp(locker.boardSetAt() + 3 days);
+
         locker.disable();
         vm.stopPrank();
         assertTrue(locker.disabled());
+    }
+
+    // Owner shouldn't be able to disable withdrawals if timelock hasn't passed
+    function test_disable_timelock_not_passed() public {
+        uint callIncentive = 0.01e18;
+        vm.startPrank(locker.owner());
+        locker.setBoard(address(board), callIncentive);
+
+        vm.warp(locker.boardSetAt() + 3 days - 1);
+
+        vm.expectRevert(Locker.TimelockPeriodNotPassed.selector);
+
+        locker.disable();
+        vm.stopPrank();
+    }
+
+    // Owner shouldn't be able to disable withdrawals if they're already disabled
+    function test_disable_already_disabled() public {
+        uint callIncentive = 0.01e18;
+        vm.startPrank(locker.owner());
+        locker.setBoard(address(board), callIncentive);
+
+        vm.warp(locker.boardSetAt() + 3 days);
+
+        locker.disable();
+
+        vm.expectRevert(Locker.AlreadyDisabled.selector);
+
+        locker.disable();
+        vm.stopPrank();
     }
 }
