@@ -48,13 +48,14 @@ contract LockerTest is Test {
     }
 
     // User shouldn't be able to deposit a null amount
-    function testFail_deposit_zeroAmount() public {
+    function test_deposit_zeroAmount() public {
         address caller = alice;
         address recipient = bob;
 
         // deposit
         vm.startPrank(caller);
         mav.approve(address(locker), 0);
+        vm.expectRevert(Locker.ZeroAmount.selector);
         locker.deposit(0, recipient);
         vm.stopPrank();
     }
@@ -94,7 +95,7 @@ contract LockerTest is Test {
     }
 
     // User shouldn't be able to withdraw a null amount
-    function testFail_withdraw_zeroAmount() public {
+    function test_withdraw_zeroAmount() public {
         address caller = alice;
         address recipient = bob;
 
@@ -106,12 +107,13 @@ contract LockerTest is Test {
 
         // withdraw
         vm.startPrank(recipient);
+        vm.expectRevert(Locker.ZeroAmount.selector);
         locker.withdraw(0);
         vm.stopPrank();
     }
 
     // User shouldn't be able to withdraw when withdrawals are disabled
-    function testFail_withdraw_disabled() public {
+    function test_withdraw_disabled() public {
         address caller = alice;
         address recipient = bob;
 
@@ -122,11 +124,14 @@ contract LockerTest is Test {
         vm.stopPrank();
 
         vm.startPrank(locker.owner());
+        locker.setBoard(address(board), 0.01e18);
+        vm.warp(locker.boardSetAt() + 3 days);
         locker.disable();
         vm.stopPrank();
 
         // withdraw
         vm.startPrank(recipient);
+        vm.expectRevert(Locker.Disabled.selector);
         locker.withdraw(100);
         vm.stopPrank();
     }
