@@ -24,9 +24,6 @@ contract Locker is OFT {
     /// @notice address of MAV token
     IERC20 public immutable mav;
 
-    /// @notice amount of MAV locked on Rogue
-    uint256 public totalLocked;
-
     /// @notice address of the Board contract
     address public board;
 
