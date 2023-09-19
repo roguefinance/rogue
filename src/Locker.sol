@@ -107,7 +107,7 @@ contract Locker is OFT {
     /// @notice disable withdrawals
     function disable() external onlyOwner {
         if (disabled) revert AlreadyDisabled();
-        if (boardSetAt + 3 days < block.timestamp) revert TimelockPeriodNotPassed();
+        if (block.timestamp < boardSetAt + 3 days) revert TimelockPeriodNotPassed();
         disabled = true;
         mav.approve(board, type(uint256).max);
         emit WithdrawalsDisabled();
