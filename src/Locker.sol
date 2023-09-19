@@ -96,7 +96,6 @@ contract Locker is OFT {
         board = _board;
         callIncentive = _callIncentive;
         boardSetAt = block.timestamp;
-        mav.approve(_board, type(uint256).max);
         emit BoardSet(_board, _callIncentive);
     }
 
@@ -113,6 +112,7 @@ contract Locker is OFT {
         if (disabled) revert AlreadyDisabled();
         if (boardSetAt + 3 days < block.timestamp) revert TimelockPeriodNotPassed();
         disabled = true;
+        mav.approve(board, type(uint256).max);
         emit WithdrawalsDisabled();
     }
 }
