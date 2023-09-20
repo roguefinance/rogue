@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-                                  
+
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {OFT} from "@layerzerolabs/solidity-examples/contracts/token/oft/OFT.sol";
 import {IBoard} from "./interfaces/IBoard.sol";
 
 contract Locker is OFT {
-
     error ZeroAmount();
     error NoDeposit();
     error BoardAlreadySet();

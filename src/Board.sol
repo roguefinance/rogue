@@ -6,7 +6,6 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 
 contract Board {
     using SafeERC20 for IERC20;
-    
 
     uint256 public mavLocked;
     bool public isBoard = true;
@@ -26,8 +25,4 @@ contract Board {
         // veMav.extend(INITIAL_ID, maxDuration, toLock, true); // TODO put back for test/prod
         mavLocked += toLock;
     }
-
-
 }
-
-    

@@ -7,7 +7,6 @@ import {Locker} from "src/Locker.sol";
 import {Board} from "src/Board.sol";
 
 contract LockerTest is Test {
-
     Locker locker;
     MockERC20 mav;
     address layerZeroEndpoint = address(1);
@@ -29,8 +28,7 @@ contract LockerTest is Test {
     /// DEPOSIT
 
     // User should be able to deposit and get rMAV minted
-    function test_deposit(uint _deposited) public {
-        
+    function test_deposit(uint256 _deposited) public {
         address caller = alice;
         address recipient = bob;
 
@@ -63,8 +61,7 @@ contract LockerTest is Test {
     /// WITHDRAW
 
     // User should be able to withdraw and get rMAV burned
-    function test_withdraw(uint _deposited) public {
-
+    function test_withdraw(uint256 _deposited) public {
         address caller = alice;
         address recipient = bob;
 
@@ -76,18 +73,18 @@ contract LockerTest is Test {
         locker.deposit(_deposited, recipient);
         vm.stopPrank();
 
-        uint lockerBalanceBefore = locker.balanceOf(recipient);
-        uint mavBalanceBefore = mav.balanceOf(recipient);
-        uint totalSupplyBefore = locker.totalSupply();
+        uint256 lockerBalanceBefore = locker.balanceOf(recipient);
+        uint256 mavBalanceBefore = mav.balanceOf(recipient);
+        uint256 totalSupplyBefore = locker.totalSupply();
 
         // withdraw
         vm.startPrank(recipient);
         locker.withdraw(_deposited);
         vm.stopPrank();
 
-        uint deltaLocker = lockerBalanceBefore - locker.balanceOf(recipient);
-        uint deltaMav = mav.balanceOf(recipient) - mavBalanceBefore;
-        uint deltaSupply = totalSupplyBefore - locker.totalSupply();
+        uint256 deltaLocker = lockerBalanceBefore - locker.balanceOf(recipient);
+        uint256 deltaMav = mav.balanceOf(recipient) - mavBalanceBefore;
+        uint256 deltaSupply = totalSupplyBefore - locker.totalSupply();
 
         assertEq(deltaLocker, _deposited);
         assertEq(deltaMav, _deposited);
@@ -139,8 +136,7 @@ contract LockerTest is Test {
     /// LOCK
 
     // Bots should be able to lock MAV on veMAV in exchange for an incentive
-    function test_lock(uint _deposited, uint _incentive) public {
-
+    function test_lock(uint256 _deposited, uint256 _incentive) public {
         address caller = alice;
         address recipient = bob;
         address incentiveCaller = address(674674);
@@ -176,8 +172,8 @@ contract LockerTest is Test {
         address caller = alice;
         address recipient = bob;
         address incentiveCaller = address(674674);
-        
-        uint deposited = 1e18;
+
+        uint256 deposited = 1e18;
 
         // deposit
         vm.startPrank(caller);
@@ -194,7 +190,6 @@ contract LockerTest is Test {
 
     // Bots shouldn't be able to lock MAV on veMAV when no MAV is deposited
     function test_lock_noDeposit() public {
-
         address incentiveCaller = address(674674);
 
         vm.startPrank(locker.owner());
@@ -248,7 +243,7 @@ contract LockerTest is Test {
     }
 
     // Owner should be able to update the incentive
-    function test_updateIncentive(uint _incentive) public {
+    function test_updateIncentive(uint256 _incentive) public {
         _incentive = bound(_incentive, 1, 0.01e18);
 
         vm.startPrank(locker.owner());
@@ -260,7 +255,7 @@ contract LockerTest is Test {
 
     // Owner shouldn't be able to update the incentive if it's invalid
     function test_updateIncentive_wrongValue() public {
-        uint invalidIncentive = 0.01e18 + 1;
+        uint256 invalidIncentive = 0.01e18 + 1;
         vm.startPrank(locker.owner());
         bytes memory revertData = abi.encodeWithSelector(Locker.InvalidIncentiveValue.selector, invalidIncentive);
         vm.expectRevert(revertData);
@@ -272,7 +267,7 @@ contract LockerTest is Test {
 
     // Owner should be able to disable withdrawals if timelock has passed
     function test_disable() public {
-        uint callIncentive = 0.01e18;
+        uint256 callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), callIncentive);
 
@@ -285,7 +280,7 @@ contract LockerTest is Test {
 
     // Owner shouldn't be able to disable withdrawals if timelock hasn't passed
     function test_disable_timelock_not_passed() public {
-        uint callIncentive = 0.01e18;
+        uint256 callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), callIncentive);
 
@@ -299,7 +294,7 @@ contract LockerTest is Test {
 
     // Owner shouldn't be able to disable withdrawals if they're already disabled
     function test_disable_already_disabled() public {
-        uint callIncentive = 0.01e18;
+        uint256 callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
         locker.setBoard(address(board), callIncentive);
 
@@ -312,9 +307,10 @@ contract LockerTest is Test {
         locker.disable();
         vm.stopPrank();
     }
-    // Onwer shouldn't 
+    // Onwer shouldn't
+
     function test_disable_board_not_set() public {
-        uint callIncentive = 0.01e18;
+        uint256 callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
         vm.expectRevert(Locker.InvalidDisabling.selector);
         locker.disable();
