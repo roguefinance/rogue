@@ -307,8 +307,16 @@ contract LockerTest is Test {
 
         locker.disable();
 
-        vm.expectRevert(Locker.AlreadyDisabled.selector);
+        vm.expectRevert(Locker.InvalidDisabling.selector);
 
+        locker.disable();
+        vm.stopPrank();
+    }
+    // Onwer shouldn't 
+    function test_disable_board_not_set() public {
+        uint callIncentive = 0.01e18;
+        vm.startPrank(locker.owner());
+        vm.expectRevert(Locker.InvalidDisabling.selector);
         locker.disable();
         vm.stopPrank();
     }
