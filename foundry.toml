@@ -19,10 +19,10 @@ evm_version = 'paris'
 
 [rpc_endpoints]
 base = "${BASE_RPC_URL}"
-bnb = "${BNB_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
 
 [etherscan]
-base = { key = "${BASE_API_KEY}", url = "https://api.basescan.org/api" }
-bnb = { key = "${BNB_API_KEY}", url = "https://api.bscscan.com/api" }
+base = { key = "${BASE_API_KEY}", url = "${BASE_API_URL}" }
+bsc = { key = "${BSC_API_KEY}", url = "${BASE_API_URL}" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
