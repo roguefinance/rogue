@@ -307,10 +307,9 @@ contract LockerTest is Test {
         locker.disable();
         vm.stopPrank();
     }
-    // Onwer shouldn't
-
+    
+    // Owner shouldn't be able to disable withdrawals if the board is not set
     function test_disable_board_not_set() public {
-        uint256 callIncentive = 0.01e18;
         vm.startPrank(locker.owner());
         vm.expectRevert(Locker.InvalidDisabling.selector);
         locker.disable();
