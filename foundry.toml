@@ -18,11 +18,15 @@ via_ir = true # TODO use for production
 evm_version = 'paris'
 
 [rpc_endpoints]
+eth = "${ETH_RPC_URL}"
 base = "${BASE_RPC_URL}"
 bsc = "${BSC_RPC_URL}"
+zksync = "${ZKSYNC_RPC_URL}"
 
 [etherscan]
+eth = { key = "${ETH_API_KEY}", url = "${ETH_API_URL}" }
 base = { key = "${BASE_API_KEY}", url = "${BASE_API_URL}" }
 bsc = { key = "${BSC_API_KEY}", url = "${BASE_API_URL}" }
+
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
