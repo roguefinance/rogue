@@ -3,7 +3,6 @@
 ## Documentation
 This repository uses [Foundry](https://book.getfoundry.sh/") as smart-contract development framework.
 
-This contract is used to deposit MAV on Rogue.
 ## Locker.sol  
 This contract is used to deposit MAV tokens on Rogue.
 - Depositors receive rMAV tokens at a 1:1 ratio.
