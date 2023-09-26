@@ -1,66 +1,35 @@
-## Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
 ## Documentation
+This repository uses [Foundry](https://book.getfoundry.sh/") as smart-contract development framework.
 
-https://book.getfoundry.sh/
+This contract is used to deposit MAV on Rogue.
+## Locker.sol  
+This contract is used to deposit MAV tokens on Rogue.
+- Depositors receive rMAV tokens at a 1:1 ratio.
+- Depositors can withdraw MAV until a pre-announced date.
+- rMAV adheres to the Layer Zero OFT standard.
+- Anybody can call `lock` to extend the lockup and receive rMAV tokens as incentive.
+
 
 ## Usage
 
-### Build
+### To build
 
 ```shell
 $ forge build
 ```
 
-### Test
+### To test
 
 ```shell
 $ forge test
 ```
 
-### Format
+### To get coverage
 
 ```shell
-$ forge fmt
+$ forge coverage
 ```
 
-### Gas Snapshots
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
