@@ -1,7 +1,7 @@
 
 
 ## Documentation
-This repository uses [Foundry](https://book.getfoundry.sh/") as smart-contract development framework.
+This repository uses [Foundry](https://book.getfoundry.sh/) as smart-contract development framework.
 
 ## Locker.sol  
 This contract is used to deposit MAV tokens on Rogue.
